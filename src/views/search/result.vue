@@ -1,6 +1,6 @@
 <template>
   <div class='container'>
-    <van-button to="/article">文章详情</van-button>
+    <van-nav-bar title="搜索结果" left-arrow @click-left="$router.back()" />
   </div>
 </template>
 

@@ -1,7 +1,7 @@
 <template>
   <div id="app">
-    App
-    <van-button type="primary">主要按钮</van-button>
+    <!-- 一级路由  视图位置 -->
+    <router-view></router-view>
   </div>
 </template>
 
