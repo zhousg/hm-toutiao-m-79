@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+import store from '@/store'
 
 const Layout = () => import('@/views/Layout')
 const Home = () => import('@/views/home')
@@ -34,6 +35,16 @@ const router = new Router({
     { path: '/search/result', name: 'search-result', component: SearchResult },
     { path: '/article', name: 'article', component: Article }
   ]
+})
+
+// 登录拦截
+// 条件一： /user /user/profile /user/chat 需要登录
+// 条件二： 没有token信息
+router.beforeEach((to, from, next) => {
+  // 跳转的时候需要 带上当前的路由地址
+  const login = { path: '/login', query: { redirect: to.path } }
+  if (to.path.startsWith('/user') && !store.state.user.token) return next(login)
+  next()
 })
 
 export default router

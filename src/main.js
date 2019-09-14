@@ -5,7 +5,7 @@ import store from './store'
 
 // 使用vant组件库  (完整导入，将来做优化改成按需导入)
 import vant from 'vant'
-import 'vant/lib/index.css'
+import 'vant/lib/index.less'
 
 import 'amfe-flexible'
 import '@/styles/index.less'
