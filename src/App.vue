@@ -1,7 +1,10 @@
 <template>
   <div id="app">
     <!-- 一级路由  视图位置 -->
-    <router-view></router-view>
+    <keep-alive>
+      <router-view v-if="$route.meta.keepAlive"></router-view>
+    </keep-alive>
+    <router-view v-if="!$route.meta.keepAlive"></router-view>
   </div>
 </template>
 

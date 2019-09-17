@@ -3,7 +3,10 @@
     <van-nav-bar v-if="active!=='/user'" fixed title="黑马头条" right-text="搜索" @click-right="$router.push('/search')" />
     <div class="my-wrapper" :class="{noTop:active==='/user'}">
       <!-- 二级路由 视图位置 -->
-      <router-view></router-view>
+      <keep-alive>
+        <router-view v-if="$route.meta.keepAlive"></router-view>
+      </keep-alive>
+      <router-view v-if="!$route.meta.keepAlive"></router-view>
     </div>
     <!-- route 开启路由模式 -->
     <van-tabbar :value="active" route>
