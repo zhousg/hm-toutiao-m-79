@@ -19,7 +19,7 @@
       <van-grid class="van-hairline--left">
         <van-grid-item v-for="item in optionalChannels" :key="item.id">
           <span class="f12">{{item.name}}</span>
-          <van-icon class="btn" name="plus"></van-icon>
+          <van-icon @click="addChannel(item)" class="btn" name="plus"></van-icon>
         </van-grid-item>
       </van-grid>
     </div>
@@ -27,7 +27,7 @@
 </template>
 
 <script>
-import { getAllChannels, delChannel } from '@/api/channel'
+import { getAllChannels, delChannel, addChannel } from '@/api/channel'
 export default {
   props: {
     value: {
@@ -66,6 +66,52 @@ export default {
     this.getAllChannels()
   },
   methods: {
+    // 添加频道
+    async addChannel ({ id, name }) {
+      // item 传过来的意义是：本地存储和接口调用 都需要
+      // 接口调用：[{id:'频道ID',seq:'序号'}]
+      // 本地存储：{id:'频道ID',name:'频道名称'}
+      // 将来实现的API  实现两个功能  传参兼容两种方式
+      // 传入给API的参数，必须包含两种数据。
+      // 决定数据格式：[{id:'频道ID',seq:'序号',name:'频道名称'},...{id:'频道ID',seq:'序号',name:'频道名称'}]
+      // 开始组织数据：依赖当前的我的频道
+      const newChannels = this.channels.map((item, i) => ({
+        id: item.id,
+        name: item.name,
+        seq: i
+      }))
+      // 推荐频道是不需要排序的。默认是第一位置。不需要给后台。
+      newChannels.splice(0, 1)
+      // 添加频道进入 新的频道数组
+      newChannels.push({ id, name, seq: newChannels.length + 1 })
+
+      try {
+        // 调用API 进行添加
+        await addChannel(newChannels)
+        // 处理成功
+        this.$toast({ type: 'success', message: '添加成功' })
+        // 其他逻辑  追加到组件上的我的频道数据中
+        this.channels.push({
+          id,
+          name,
+          // 上拉加载中...
+          upLoading: false,
+          // 所有数据加载完毕
+          finished: false,
+          // 刷新中...
+          downLoading: false,
+          // 文章列表
+          articles: [],
+          // 时间戳 加载数据（页码）
+          timestamp: Date.now(),
+          // 阅读位置
+          scrollTop: 0
+        })
+      } catch (e) {
+        // 处理失败
+        this.$toast({ type: 'success', message: '添加失败' })
+      }
+    },
     // 删除频道
     async delChannel (index, channelId) {
       try {

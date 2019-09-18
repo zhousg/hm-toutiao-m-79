@@ -78,6 +78,42 @@ export const delChannel = (channelId) => {
 }
 
 /**
+ * 添加频道
+ * @param {Array} orderChannels - 排序好的频道数据 [{id:'频道ID',seq:'序号',name:'频道名称'}]
+ */
+export const addChannel = (orderChannels) => {
+  return new Promise(async (resolve, reject) => {
+    try {
+      // 用户信息
+      const user = store.state.user
+      if (user.token) {
+        // 调用后台接口
+        await request(`/app/v1_0/user/channels`, 'PUT', {
+          // 注意：orderChannels 多了一个name属性 ，没有关系。
+          channels: orderChannels
+        })
+        // 处理成功
+        resolve()
+      } else {
+        // 本地存储
+        const { id, name } = orderChannels[orderChannels.length - 1]
+        // 获取本地数据
+        const channelsStr = window.localStorage.getItem(CHANNEL_KEY)
+        const localChannels = JSON.parse(channelsStr)
+        // 追加数据
+        localChannels.push({ id, name })
+        // 再存入本地即可
+        window.localStorage.setItem(CHANNEL_KEY, JSON.stringify(localChannels))
+        // 处理成功
+        resolve()
+      }
+    } catch (e) {
+      reject(e)
+    }
+  })
+}
+
+/**
  * 获取全部频道
  */
 export const getAllChannels = () => {
