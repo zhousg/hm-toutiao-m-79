@@ -53,7 +53,8 @@ instance.interceptors.response.use(res => {
     const login = { path: '/login', query: { redirect: router.currentRoute.path } }
     // 防止未登录    必须有refresh_token
     if (!user.token || !user.refresh_token) {
-      return router.push(login)
+      router.push(login)
+      return Promise.reject(err)
     }
     try {
       // 已经登录 且 有refresh_token
@@ -80,9 +81,11 @@ instance.interceptors.response.use(res => {
       // 清理无效token
       store.commit('delUser')
       // 跳转登录页面
-      return router.push(login)
+      router.push(login)
+      return Promise.reject(err)
     }
   }
+  // 抛出错误  阻碍程序运行
   return Promise.reject(err)
 })
 

@@ -15,7 +15,7 @@
               finished-text="没有更多了"
               @load="onLoad"
             >
-              <van-cell v-for="article in activeChannel.articles" :key="article.art_id.toString()">
+              <van-cell @click="$router.push(`/article/${article.art_id}`)" v-for="article in activeChannel.articles" :key="article.art_id.toString()">
                 <div class="article_item">
                   <h3 class="van-ellipsis">{{article.title}}</h3>
                   <div class="img_box" v-if="article.cover.type===3">
